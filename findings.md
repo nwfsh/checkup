@@ -28,5 +28,30 @@ In DM_20250425-201459, interviewer is leaking the steps.
 
 ## Formatting quirks (cleaning)
 THere are inconsistent quotation marks generated within the script, however does not affect quality of notes.
+Notes generated sometimes have spaces between texts but sometimes doesn't, will affect UX quality of notes. 
+
+## Notice on empty fields + made-up substance use
+The interviewer asks every patient about nicotine, marijuana and alcohol (question bank), but the CSV has no alcohol or nicotine field. It only has Substance Abuse (just "yes" or empty) and Recreational Drug Usage (sometimes "wine"/"beer", mostly empty).
+
+So when the patient gets asked, there's nothing in the ground truth to answer from, and the patient model makes up a scenario.
+- e.g. DM_20250426-080834: "I occasionally drink socially but try to limit my intake due to my health conditions and medication regimen."
+
+Empty also doesn't tell you if it means "none" or "never generated", so these fields can't be cross checked against the CSV. Only the transcript says what the patient claimed.
+
+"None" is also stored inconsistently: Health Supplements uses [] while Allergies / drug fields are left empty. Source truth storage quality isn't great.
+
+Decision: not scoring substance use. Good finding, bad test field.
+
+## Insights on leakage
+Leaks cluster: patient leaks occur in 58% of transcripts with an interviewer leak vs 10% without. In transcripts with both, the interviewer usually leaked first (14/22). Possibly one model copying the other's format from the shared conversation; not tested further.
 
 ## Decisions
+Avoiding embeddings for now since its a small project
+
+Fields : DOB, Sex, Handedness, Relationship Status, Medicaitons
+Excluding : Short transcripts ( < 20 messages )
+Labels : Invented,
+
+## Pipeline to accelerate 
+The paper identifies leaked chain-of-thought ('soft failures') through manual review and lists automated quality checks as future work.
+I wrote a simple rule-based flag for the leak markers so these transcripts can be filtered before evaluation.
