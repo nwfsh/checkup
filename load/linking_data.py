@@ -56,7 +56,7 @@ if __name__ == "__main__":
     transcripts = load_transcripts()
     patients = load_patients()
     links = link(transcripts, patients)
-    links.to_csv("data/links.csv", index=False)
+    links.to_csv("outputs/links.csv", index=False)
 
     print(links["status"].value_counts())
     print(links[links["status"] == "excluded"])

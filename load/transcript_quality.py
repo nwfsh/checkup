@@ -39,7 +39,7 @@ if __name__ == "__main__":
             "short": len(t) < 20,
         })
     quality = pd.DataFrame(records)
-    quality.to_csv("data/quality.csv", index=False)
+    quality.to_csv("outputs/quality.csv", index=False)
 
     print(quality[["interviewer_leak", "patient_leak", "short"]].sum())
     print("any leak:", (quality["interviewer_leak"] | quality["patient_leak"]).sum())

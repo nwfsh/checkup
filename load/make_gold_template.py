@@ -4,12 +4,12 @@ from load_data import load_patients
 
 FIELDS = ["Date of Birth", "Sex", "Handedness", "Relationship Status", "Medications"]
 
-# never overwrite labels by accident: delete data/gold.csv yourself if you really want a fresh template
-if os.path.exists("data/gold.csv"):
-    raise SystemExit("data/gold.csv already exists, not overwriting your labels.")
+# never overwrite labels by accident: delete outputs/gold.csv yourself if you really want a fresh template
+if os.path.exists("outputs/gold.csv"):
+    raise SystemExit("outputs/gold.csv already exists, not overwriting your labels.")
 
-links = pd.read_csv("data/links.csv")
-quality = pd.read_csv("data/quality.csv")
+links = pd.read_csv("outputs/links.csv")
+quality = pd.read_csv("outputs/quality.csv")
 pairs = links.merge(quality, on="transcript_file")
 pairs = pairs[(pairs["status"] == "confirmed") & (~pairs["short"])]
 
@@ -28,4 +28,4 @@ for _, p in sample.iterrows():
             "label": "",              # CAPTURED / MISSED / INVENTED / WRONG
             "comment": "",
         })
-pd.DataFrame(rows).to_csv("data/gold.csv", index=False)
+pd.DataFrame(rows).to_csv("outputs/gold.csv", index=False)
