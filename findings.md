@@ -21,7 +21,13 @@ Generation of Mr/Mrs stored inside Full name that contradicts sex identified wit
 ## Patient model problems
 East asian names are not accurately split when generating scripts regarding them explainng their names. 
 Eg. "I'm fine with being addressed as Liang Xinyi, but some friends also call me Liang." Liang is actually a surname.
-In DM_20250425-180816, The patient leaking step-by-step reasoning instead of answering sex . 
+In DM_20250425-180816, The patient leaking step-by-step reasoning instead of answering sex .
+I believe its uncommon for people to know what common-law is,
+hence might explain their relationship status in other ways trying
+to get the therapist to narrow down.  
+In DM_20250427-235930 the patient model named completely different medications than the CSV (said Lisinopril + Alprazolam; CSV has Olanzapine + Prozac), and the notes then dropped them.
+Two stages failed on one patient, which is why notes are judged against the transcript, not the CSV.
+
 
 ## Interviewer / summarizer problems
 In DM_20250425-201459, interviewer is leaking the steps. 
@@ -48,10 +54,37 @@ Leaks cluster: patient leaks occur in 58% of transcripts with an interviewer lea
 ## Decisions
 Avoiding embeddings for now since its a small project
 
-Fields : DOB, Sex, Handedness, Relationship Status, Medicaitons
+Fields : DOB, Sex, Handedness, Relationship Status, Medications
 Excluding : Short transcripts ( < 20 messages )
-Labels : Invented,
+Labels : Invented, Missing, Accurate, Wrong 
+
+Judged against what the patient said; if the CSV disagrees, the mismatch goes in the comment.
 
 ## Pipeline to accelerate 
 The paper identifies leaked chain-of-thought ('soft failures') through manual review and lists automated quality checks as future work.
 I wrote a simple rule-based flag for the leak markers so these transcripts can be filtered before evaluation.
+
+## Ambiguous relationship labels
+Relationship Status categories aren't defined. "Separated" could mean legally separated from a marriage or a break-up from a long-term relationship; the CSV doesn't say. Also misspelled "Widowded" (12 patients).
+
+## Gold set results
+Hand-labeled 10 randomly sampled transcripts (seed 42, short ones excluded) × 5 fields = 50 labels,
+judged against what the patient said in the transcript.
+
+- CAPTURED 47, MISSED 3, INVENTED 0, WRONG 0
+- DOB, Sex, Relationship Status: 10/10 captured
+- Handedness: 9/10 (1 missed)
+- Medications: 8/10 (2 missed), the most clinically important field
+- e.g. DM_20250428-012836: patient named Risperdal, Celexa and Prozac; notes have no
+  medication line at all, but still record "Allergies: None reported".
+
+Small sample, so these are examples of failure types, not rates.
+
+## Notes format is inconsistent between transcripts: 
+the same field gets different labels
+(e.g. "Sex:", "Sex identification:", "Sex identified:", "Identified sex:"), some notes use bullets/headers and some plain lines, and some repeat the patient's name in every line. 
+("Elmar identifies as right-handed"). This adds words that carry no information (extra output tokens per note) and makes the notes harder to parse automatically.
+
+## Some notes captured more information than needed or invented padding information, however did not invent new information. 
+Notes often used more words than needed: in 6/50 labeled rows they repeated the patient's name or added phrases like "Patient identifies as…" without adding information. This lengthens notes and costs extra tokens. In one case (DM_20250427-150925) the notes included dose and duration, but the patient had said these, so it's thoroughness, not invention. No invented facts were found in the 50 labels: the notes' errors were omissions (medications) and padding, not hallucination.
+
