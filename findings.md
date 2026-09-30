@@ -88,3 +88,11 @@ the same field gets different labels
 ## Some notes captured more information than needed or invented padding information, however did not invent new information. 
 Notes often used more words than needed: in 6/50 labeled rows they repeated the patient's name or added phrases like "Patient identifies as…" without adding information. This lengthens notes and costs extra tokens. In one case (DM_20250427-150925) the notes included dose and duration, but the patient had said these, so it's thoroughness, not invention. No invented facts were found in the 50 labels: the notes' errors were omissions (medications) and padding, not hallucination.
 
+## Pipeline results (llama3.1:8b + rules)
+Llama extracted the 5 fields from each note as JSON; simple rules labeled each field, compared to my hand labels.
+- Run 1 (untuned): 45/50 agreement (90%). Handedness, Sex, Relationship 10/10; DOB 8/10; Medications 7/10.
+- The pipeline never labeled CAPTURED where I labeled MISSED: all errors were over-flagging, the safer direction.
+- 2 errors were my scoring rules (dates inside quotes/sentences didn't parse). Llama had extracted them correctly.
+- 3 errors were Llama counting supplements (magnesium, melatonin, calcium) as medications; the prompt didn't say to exclude them.
+
+No separate test set yet: the same 50 labels were used to find the pipeline's problems, so the first run (45/50, untuned) is the fair number. Fixes made after that (date parsing, excluding supplements from medications) haven't been tested on new data. With more time, I'd label new held-out transcripts, test the fixed pipeline on them once, and expand to harder free-text fields.
