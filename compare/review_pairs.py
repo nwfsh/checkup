@@ -1,6 +1,6 @@
 import json
 import pandas as pd
-from load_data import load_patients, load_transcripts
+from load.load_data import load_patients, load_transcripts
 
 
 links = pd.read_csv("data/links.csv")
