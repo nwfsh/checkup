@@ -3,7 +3,7 @@ import pandas as pd
 from load.load_data import load_patients, load_transcripts
 
 
-links = pd.read_csv("data/links.csv")
+links = pd.read_csv("outputs/links.csv")
 pd.set_option("display.max_rows", None)
 # shortcut to bring out only values of status confirmed 
 confirmed = links[links["status"] == "confirmed"]

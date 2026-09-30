@@ -3,7 +3,7 @@ import pandas as pd
 from load.load_data import load_transcripts
 from load.transcript_quality import message_leak
 
-GOLD_PATH = "data/gold.csv"
+GOLD_PATH = "outputs/gold.csv"
 LABELS = ["CAPTURED", "MISSED", "INVENTED", "WRONG"]
 
 st.set_page_config(layout="wide")

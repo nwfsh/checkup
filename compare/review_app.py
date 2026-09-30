@@ -19,7 +19,7 @@ st.set_page_config(layout="wide")
 
 @st.cache_data
 def load_all():
-    links = pd.read_csv("data/links.csv")
+    links = pd.read_csv("outputs/links.csv")
     confirmed = links[links["status"] == "confirmed"]
     return confirmed, load_patients(), load_transcripts()
 
@@ -34,7 +34,7 @@ confirmed, patients, transcripts = load_all()
 st.title("Review linked pairs")
 
 # optional filter by leak type, using the flags from transcript_quality.py
-quality = pd.read_csv("data/quality.csv")
+quality = pd.read_csv("outputs/quality.csv")
 leak_filter = st.radio(
     "Show", ["All", "Any leak", "Interviewer leak", "Patient leak"], horizontal=True
 )
