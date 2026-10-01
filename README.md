@@ -19,8 +19,13 @@ Summary of what I found: [result.md](result.md). Full notes: [findings.md](findi
 - Look into the notes' wordiness and East Asian name handling
 
 # how to run
-python3 load/linking_data.py          # link transcripts to patients → outputs/links.csv
-python3 load/transcript_quality.py    # flag leaked reasoning → outputs/quality.csv
-python -m streamlit run compare/review_app.py
-python3 pipeline/extracted.py         # needs Ollama + llama3.1:8b
-python3 pipeline/score.py
+The SPIT data isn't included. Download `llm_patients_042425.csv` and the April transcripts (`analysis/transcript_analysis/25_24_Transcripts/`) from the [SPIT repo](https://github.com/ubcbraincircuits/SPIT_Generation) into `data/` and `data/transcripts/`.
+
+```bash
+pip install pandas streamlit ollama
+python3 load/linking_data.py                    # link transcripts to patients
+python3 load/transcript_quality.py              # flag leaked reasoning
+python -m streamlit run compare/review_app.py   # review in the browser
+python3 pipeline/extracted.py                   # needs Ollama + llama3.1:8b, and outputs/gold.csv
+python3 pipeline/score.py                       # agreement with the gold labels
+```
