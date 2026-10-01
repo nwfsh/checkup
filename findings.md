@@ -25,7 +25,7 @@ In DM_20250425-180816, The patient leaking step-by-step reasoning instead of ans
 I believe its uncommon for people to know what common-law is,
 hence might explain their relationship status in other ways trying
 to get the therapist to narrow down.  
-In DM_20250427-235930 the patient model named completely different medications than the CSV (said Lisinopril + Alprazolam; CSV has Olanzapine + Prozac), and the notes then dropped them.
+In DM_20250427-235930 the patient model named completely different medications than the CSV (said Lisinopril + Alprazolam; CSV has Olanzapine + Prozac), and the notes then dropped them. This patient had an edge case instruction to describe pills by colour or shape instead of the name, and Lisinopril / Alprazolam aren't anywhere else in the profile, so the patient model both ignored the instruction and named drugs not in its profile.
 Two stages failed on one patient, which is why notes are judged against the transcript, not the CSV.
 
 
@@ -37,7 +37,7 @@ THere are inconsistent quotation marks generated within the script, however does
 Notes generated sometimes have spaces between texts but sometimes doesn't, will affect UX quality of notes. 
 
 ## Notice on empty fields + made-up substance use
-The interviewer asks every patient about nicotine, marijuana and alcohol (question bank), but the CSV has no alcohol or nicotine field. It only has Substance Abuse (just "yes" or empty) and Recreational Drug Usage (sometimes "wine"/"beer", mostly empty).
+The interviewer asks every patient about nicotine, marijuana and alcohol (question bank). In their code (patient_creation/variables.py), alcohol, tobacco and nicotine are part of the recreational drug list, so they're meant to live inside the Recreational Drug Usage field, not in fields of their own. But that field is empty for 121/174 interviewed patients (when filled it mixes things like "wine, cannabis, cigarettes"), and Substance Abuse is just "yes" or empty. The paper says recreational drugs were picked at random from hand-made lists, not real population data.
 
 So when the patient gets asked, there's nothing in the ground truth to answer from, and the patient model makes up a scenario.
 - e.g. DM_20250426-080834: "I occasionally drink socially but try to limit my intake due to my health conditions and medication regimen."

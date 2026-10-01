@@ -25,8 +25,8 @@ Small sample, so these are examples of failure types, not rates.
 - In DM_20250425-201459, the interviewer is leaking its steps.
 
 ### Patient model
-- In DM_20250427-235930 the patient model named completely different medications than the CSV (Lisinopril + Alprazolam; CSV has Olanzapine + Prozac), and the notes then dropped them. Two stages failed on one patient, which is why notes are judged against the transcript, not the CSV.
-- The interviewer asks every patient about nicotine, marijuana and alcohol, but the CSV has no alcohol or nicotine field, so the patient model makes up a scenario (e.g. DM_20250426-080834: "I occasionally drink socially…"). Not scoring substance use.
+- In DM_20250427-235930 the patient model named completely different medications than the CSV (Lisinopril + Alprazolam; CSV has Olanzapine + Prozac), and the notes then dropped them. This patient had an edge case instruction to describe pills by colour or shape instead of the name, and neither drug appears anywhere in the profile, so the patient model ignored the instruction and named drugs not in its profile. Two stages failed on one patient, which is why notes are judged against the transcript, not the CSV.
+- Alcohol and nicotine are meant to live inside the Recreational Drug Usage field (their variables.py lists them as recreational drugs), but that field is empty for 121/174 interviewed patients. A blank could mean "doesn't use" or "wasn't generated", and when it's blank the patient model still describes habits (e.g. DM_20250426-080834: "I occasionally drink socially…"). So substance use answers can't be checked against the profile. Not scoring substance use.
 - East Asian names are not accurately split, e.g. "I'm fine with being addressed as Liang Xinyi, but some friends also call me Liang." Liang is actually a surname.
 - In DM_20250425-180816, the patient leaks step-by-step reasoning instead of answering sex.
 
